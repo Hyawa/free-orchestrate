@@ -1,0 +1,84 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Lead model: DeepSeek V4.1 Flash Free is the orchestrator.
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "default_agent": "orchestrator-free",
+
+  "agents": {
+    "orchestrator-free": {
+      "description": "Free orchestrator: plans and delegates to free workers",
+      "mode": "primary",
+      "model": "opencode/deepseek-v4.1-flash-free",
+      "system": "You are the orchestrator. Follow the free-orchestrate skill. Use only free OpenCode models. Decompose work into bounded units, delegate to free workers, and integrate only evidence-backed results. Never switch to a paid model.",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "ask" },
+        { "action": "subagent", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "free-scout", "effect": "allow" },
+        { "action": "subagent", "resource": "free-coder", "effect": "allow" },
+        { "action": "subagent", "resource": "free-reviewer", "effect": "allow" },
+        { "action": "subagent", "resource": "free-longctx", "effect": "allow" }
+      ]
+    },
+
+    "free-scout": {
+      "description": "Read-only code mapping and research",
+      "mode": "subagent",
+      "model": "opencode/minimax-m3.1-flash-free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "*", "effect": "deny" }
+      ]
+    },
+
+    "free-coder": {
+      "description": "Implements changes",
+      "mode": "subagent",
+      "model": "opencode/step-5-preview-free",
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "deny" }
+      ]
+    },
+
+    "free-reviewer": {
+      "description": "Reviews diffs and runs tests",
+      "mode": "subagent",
+      "model": "opencode/glm-5.3-flash-free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "*", "effect": "deny" }
+      ]
+    },
+
+    "free-longctx": {
+      "description": "Reads large files and long contexts",
+      "mode": "subagent",
+      "model": "opencode/longcat-2.5-free",
+      "permissions": [
+        { "action": "edit", "resource": "*", "effect": "deny" },
+        { "action": "subagent", "resource": "*", "effect": "deny" }
+      ]
+    }
+  },
+
+  // Optional: load the skill explicitly. OpenCode also auto-discovers skills
+  // installed by the skills CLI under .agents/skills/ or .opencode/skills/.
+  // Uncomment and adjust the path if you keep the skill somewhere else.
+  // "skills": ["./skills/free-orchestrate"],
+
+  // Block every paid provider. The opencode provider hosts the free models.
+  // Statements are ordered: the last match wins, so the exception goes after
+  // the broad deny.
+  "policies": [
+    { "action": "provider.use", "resource": "*", "effect": "deny" },
+    { "action": "provider.use", "resource": "opencode", "effect": "allow" },
+    // A local provider is free too. Allow it if you run one:
+    // { "action": "provider.use", "resource": "ollama", "effect": "allow" }
+  ],
+
+  // Subagents cannot start their own subagents. This is the default; it is
+  // spelled out so the intent survives changes to the default.
+  "experimental": {
+    "subagent_depth": 1
+  }
+}

@@ -1,0 +1,45 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  free-models:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Config must use only free models
+        run: python skills/free-orchestrate/scripts/check-free-models.py opencode.jsonc.example
+
+      - name: Skill frontmatter must be valid
+        run: |
+          python - <<'PY'
+          import pathlib, sys
+
+          path = pathlib.Path("skills/free-orchestrate/SKILL.md")
+          text = path.read_text(encoding="utf-8")
+          if not text.startswith("---\n"):
+              sys.exit("SKILL.md must start with YAML frontmatter")
+          _, front, _ = text.split("---", 2)
+          keys = {}
+          for line in front.strip().splitlines():
+              if ":" in line:
+                  key, value = line.split(":", 1)
+                  keys[key.strip()] = value.strip()
+          for required in ("name", "description"):
+              if not keys.get(required):
+                  sys.exit(f"missing frontmatter field: {required}")
+          if keys["name"] != "free-orchestrate":
+              sys.exit(f"unexpected skill name: {keys['name']}")
+          if len(keys["description"]) > 1024:
+              sys.exit("description is too long")
+          print("frontmatter ok")
+          PY
