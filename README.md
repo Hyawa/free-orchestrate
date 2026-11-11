@@ -4,11 +4,7 @@ An [OpenCode](https://opencode.ai) skill that orchestrates coding work across
 **free models only**, with **DeepSeek V4.1 Flash Free** as the lead
 planner/integrator.
 
-<!--
-After you publish the repo on GitHub, replace <owner> below and uncomment:
-
-[![skills.sh](https://skills.sh/b/<owner>/free-orchestrate)](https://skills.sh/<owner>/free-orchestrate)
--->
+[![skills.sh](https://skills.sh/b/Hyawa/free-orchestrate)](https://skills.sh/Hyawa/free-orchestrate)
 
 ## What it does
 
@@ -24,12 +20,12 @@ After you publish the repo on GitHub, replace <owner> below and uncomment:
 ### With the skills CLI
 
 ```bash
-npx skills add <owner>/free-orchestrate --skill free-orchestrate -a opencode
+npx skills add Hyawa/free-orchestrate --skill free-orchestrate -a opencode
 ```
 
-Replace `<owner>` with your GitHub username or organization. The CLI installs
-the skill to `.agents/skills/free-orchestrate/` in the current project. Add
-`-g` to install it globally for your OpenCode user.
+Replace `Hyawa` with your own owner only if you install from a fork. The CLI
+installs the skill to `.agents/skills/free-orchestrate/` in the current project.
+Add `-g` to install it globally for your OpenCode user.
 
 ### With OpenCode manually
 
@@ -131,12 +127,12 @@ Free** como orquestrador principal.
 ### Com o skills CLI
 
 ```bash
-npx skills add <owner>/free-orchestrate --skill free-orchestrate -a opencode
+npx skills add Hyawa/free-orchestrate --skill free-orchestrate -a opencode
 ```
 
-Substitua `<owner>` pelo seu usuário ou organização do GitHub. O CLI instala a
-skill em `.agents/skills/free-orchestrate/` no projeto atual. Use `-g` para
-instalar globalmente para o seu usuário do OpenCode.
+Substitua `Hyawa` pelo seu próprio owner apenas se instalar a partir de um fork.
+O CLI instala a skill em `.agents/skills/free-orchestrate/` no projeto atual. Use
+`-g` para instalar globalmente para o seu usuário do OpenCode.
 
 ### Com o OpenCode manualmente
 
